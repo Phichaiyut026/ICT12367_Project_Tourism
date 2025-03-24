@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}หน้าแรก - แนะนำสถานที่ท่องเที่ยว{% endblock %}
+
+{% block content %}
+    <div class="hero-section text-center" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://source.unsplash.com/1600x900/?thailand,travel');">
+        <div class="container">
+            <h1 class="display-4">ค้นพบสถานที่ท่องเที่ยวที่น่าสนใจ</h1>
+            <p class="lead">ค้นหาและแบ่งปันประสบการณ์การท่องเที่ยวทั่วประเทศไทย</p>
+            <a href="{% url 'place_list' %}" class="btn btn-primary btn-lg mt-3">
+                <i class="fas fa-search me-2"></i>ค้นหาสถานที่ท่องเที่ยว
+            </a>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">สถานที่แนะนำ</h2>
+        <div class="row">
+            {% for place in featured_places %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="{{ place.image.url }}" class="card-img-top" alt="{{ place.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ place.name }}</h5>
+                            <p class="card-text text-muted">
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ place.province.name }}
+                            </p>
+                            <p class="card-text">{{ place.description|truncatewords:20 }}</p>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <a href="{% url 'place_detail' place.id %}" class="btn btn-outline-primary">ดูรายละเอียด</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center">
+                    <p>ไม่มีสถานที่แนะนำในขณะนี้</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">หมวดหมู่</h2>
+        <div class="row">
+            {% for category in categories %}
+                <div class="col-md-3 col-6 mb-4">
+                    <a href="{% url 'category_places' category.id %}" class="text-decoration-none">
+                        <div class="card text-center h-100 shadow-sm">
+                            <div class="card-body">
+                                <i class="fas fa-tag fa-2x mb-3 text-primary"></i>
+                                <h5 class="card-title">{{ category.name }}</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center">
+                    <p>ไม่มีหมวดหมู่ในขณะนี้</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">จังหวัด</h2>
+        <div class="row">
+            {% for province in provinces %}
+                <div class="col-md-3 col-6 mb-4">
+                    <a href="{% url 'province_places' province.id %}" class="text-decoration-none">
+                        <div class="card text-center h-100 shadow-sm">
+                            <div class="card-body">
+                                <i class="fas fa-map-marker-alt fa-2x mb-3 text-danger"></i>
+                                <h5 class="card-title">{{ province.name }}</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center">
+                    <p>ไม่มีจังหวัดในขณะนี้</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

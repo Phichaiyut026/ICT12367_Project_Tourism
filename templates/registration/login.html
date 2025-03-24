@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}เข้าสู่ระบบ - แนะนำสถานที่ท่องเที่ยว{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header bg-white">
+                        <h3 class="card-title mb-0">เข้าสู่ระบบ</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            {% if form.errors %}
+                                <div class="alert alert-danger">
+                                    ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง
+                                </div>
+                            {% endif %}
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.username.id_for_label }}" class="form-label">ชื่อผู้ใช้</label>
+                                <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" class="form-control" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.password.id_for_label }}" class="form-label">รหัสผ่าน</label>
+                                <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}" class="form-control" required>
+                            </div>
+                            
+                            <input type="hidden" name="next" value="{{ next }}">
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">เข้าสู่ระบบ</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer bg-white text-center">
+                        ยังไม่มีบัญชี? <a href="{% url 'signup' %}">สมัครสมาชิก</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

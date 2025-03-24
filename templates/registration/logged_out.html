@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}ออกจากระบบ - แนะนำสถานที่ท่องเที่ยว{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header bg-white">
+                        <h3 class="card-title mb-0">ออกจากระบบ</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>คุณได้ออกจากระบบเรียบร้อยแล้ว</p>
+                        <a href="{% url 'home' %}" class="btn btn-primary">กลับไปยังหน้าแรก</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

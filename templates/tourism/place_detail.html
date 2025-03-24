@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ place.name }} - แนะนำสถานที่ท่องเที่ยว{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">หน้าแรก</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'place_list' %}">สถานที่ท่องเที่ยว</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ place.name }}</li>
+            </ol>
+        </nav>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <img src="{{ place.image.url }}" class="img-fluid" alt="{{ place.name }}" style="max-height: 500px; object-fit: cover;">
+                    <div class="card-body">
+                        <h1 class="card-title">{{ place.name }}</h1>
+                        <div class="d-flex mb-3">
+                            <span class="badge bg-primary me-2">
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ place.province.name }}
+                            </span>
+                            {% for category in place.categories.all %}
+                                <span class="badge bg-secondary me-2">
+                                    <i class="fas fa-tag me-1"></i>{{ category.name }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="rating">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= avg_rating|floatformat:"0" %}
+                                        <i class="fas fa-star"></i>
+                                    {% elif forloop.counter <= avg_rating|add:"0.5"|floatformat:"0" %}
+                                        <i class="fas fa-star-half-alt"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="ms-2">{{ avg_rating|floatformat:"1" }} ({{ reviews.count }} รีวิว)</span>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mt-4">รายละเอียด</h5>
+                        <p class="card-text">{{ place.description|linebreaks }}</p>
+                        
+                        <h5 class="mt-4">ที่อยู่</h5>
+                        <p class="card-text">{{ place.address|linebreaks }}</p>
+                    </div>
+                </div>
+                
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h4>รีวิวจากผู้ใช้ ({{ reviews.count }})</h4>
+                    </div>
+                    <div class="card-body">
+                        {% if user.is_authenticated %}
+                            <div class="mb-4">
+                                <h5>เขียนรีวิว</h5>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="{{ form.rating.id_for_label }}" class="form-label">คะแนน</label>
+                                        {{ form.rating }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="{{ form.comment.id_for_label }}" class="form-label">ความคิดเห็น</label>
+                                        {{ form.comment }}
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">ส่งรีวิว</button>
+                                </form>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <a href="{% url 'login' %}?next={{ request.path }}">เข้าสู่ระบบ</a> เพื่อเขียนรีวิว
+                            </div>
+                        {% endif %}
+                        
+                        <hr>
+                        
+                        <div class="reviews">
+                            {% for review in reviews %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="mb-0">{{ review.user.username }}</h6>
+                                            <small class="text-muted">{{ review.created_at|date:"d M Y H:i" }}</small>
+                                        </div>
+                                        <div class="rating mb-2">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= review.rating %}
+                                                    <i class="fas fa-star"></i>
+                                                {% else %}
+                                                    <i class="far fa-star"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <p class="card-text">{{ review.comment|linebreaks }}</p>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <p class="text-center">ยังไม่มีรีวิวสำหรับสถานที่นี้</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-lg-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">สถานที่ใกล้เคียง</h5>
+                    </div>
+                    <div class="card-body">
+                        {% with related_places=place.province.place_set.all|slice:":5" %}
+                            {% for related in related_places %}
+                                {% if related.id != place.id %}
+                                    <div class="d-flex mb-3">
+                                        <img src="{{ related.image.url }}" alt="{{ related.name }}" class="rounded" style="width: 70px; height: 70px; object-fit: cover;">
+                                        <div class="ms-3">
+                                            <h6 class="mb-1">{{ related.name }}</h6>
+                                            <div class="small text-muted">
+                                                <i class="fas fa-map-marker-alt me-1"></i>{{ related.province.name }}
+                                            </div>
+                                            <a href="{% url 'place_detail' related.id %}" class="btn btn-sm btn-outline-primary mt-1">ดูรายละเอียด</a>
+                                        </div>
+                                    </div>
+                                    {% if not forloop.last %}
+                                        <hr>
+                                    {% endif %}
+                                {% endif %}
+                            {% empty %}
+                                <p class="text-center">ไม่มีสถานที่ใกล้เคียง</p>
+                            {% endfor %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
