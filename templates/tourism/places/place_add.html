@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}เพิ่มสถานที่ท่องเที่ยว{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="mb-4">เพิ่มสถานที่ท่องเที่ยว</h1>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">ชื่อสถานที่</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.province.id_for_label }}" class="form-label">จังหวัด</label>
+                            {{ form.province }}
+                        </div>
+                        <div class="col-12">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">รายละเอียด</label>
+                            {{ form.description }}
+                        </div>
+                        <div class="col-12">
+                            <label for="{{ form.address.id_for_label }}" class="form-label">ที่อยู่</label>
+                            {{ form.address }}
+                        </div>
+                        <div class="col-12">
+                            <label for="{{ form.categories.id_for_label }}" class="form-label">หมวดหมู่</label>
+                            {{ form.categories }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">รูปภาพ</label>
+                            {{ form.image }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.map_embed.id_for_label }}" class="form-label">โค้ด Google Maps</label>
+                            {{ form.map_embed }}
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                {{ form.is_featured }}
+                                <label class="form-check-label" for="{{ form.is_featured.id_for_label }}">สถานที่แนะนำ</label>
+                            </div>
+                            <div class="form-check">
+                                {{ form.has_parking }}
+                                <label class="form-check-label" for="{{ form.has_parking.id_for_label }}">มีที่จอดรถ</label>
+                            </div>
+                            <div class="form-check">
+                                {{ form.has_restaurant }}
+                                <label class="form-check-label" for="{{ form.has_restaurant.id_for_label }}">มีร้านอาหาร</label>
+                            </div>
+                            <div class="form-check">
+                                {{ form.has_wifi }}
+                                <label class="form-check-label" for="{{ form.has_wifi.id_for_label }}">มี Wi-Fi</label>
+                            </div>
+                            <div class="form-check">
+                                {{ form.has_restroom }}
+                                <label class="form-check-label" for="{{ form.has_restroom.id_for_label }}">มีห้องน้ำ</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">บันทึก</button>
+                        <a href="{% url 'manage_data' %}" class="btn btn-secondary">ยกเลิก</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

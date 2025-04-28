@@ -1,129 +1,849 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}แนะนำสถานที่ท่องเที่ยว{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        .navbar-brand {
-            font-weight: bold;
+      :root {
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --accent-color: #f39c12;
+        --text-color: #333333;
+        --light-bg: #f8f9fa;
+        --dark-bg: #343a40;
+        --border-radius: 10px;
+        --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      body {
+        font-family: "Prompt", sans-serif;
+        color: var(--text-color);
+        line-height: 1.6;
+        background-color: #f9f9f9;
+      }
+      .navbar {
+        padding: 15px 0;
+        transition: all 0.4s ease;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px);
+      }
+
+      .navbar.scrolled {
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        padding: 10px 0;
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--primary-color) !important;
+      }
+
+      .navbar-brand i {
+        color: var(--accent-color);
+      }
+
+      .nav-link {
+        position: relative;
+        font-weight: 500;
+        padding: 8px 15px !important;
+        margin: 0 5px;
+        color: var(--text-color) !important;
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: var(--primary-color);
+        transition: width 0.3s ease;
+      }
+
+      .nav-link:hover::after,
+      .nav-link.active::after {
+        width: 100%;
+      }
+      .dropdown {
+        position: relative;
+      }
+
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+        padding: 8px 0;
+        margin-top: 5px;
+        min-width: 200px;
+        background-color: white;
+        z-index: 1050;
+      }
+      .dropdown-menu.show {
+        display: block;
+      }
+      .dropdown-toggle::after {
+        display: inline-block;
+        margin-left: 0.255em;
+        vertical-align: 0.255em;
+        content: "";
+        border-top: 0.3em solid;
+        border-right: 0.3em solid transparent;
+        border-bottom: 0;
+        border-left: 0.3em solid transparent;
+      }
+
+      .dropdown-item {
+        padding: 10px 20px;
+        transition: var(--transition);
+        font-size: 0.95rem;
+      }
+
+      .dropdown-item:hover {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--primary-color);
+      }
+
+      .dropdown-divider {
+        margin: 5px 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      /* ปรับ Navbar ให้มี z-index สูง */
+      .navbar {
+        padding: 15px 0;
+        transition: all 0.4s ease;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px);
+        z-index: 1000; /* เพิ่ม z-index เพื่อให้ navbar อยู่เหนือเนื้อหา */
+      }
+
+      /* Hero Section Enhancement */
+      .hero-section {
+        position: relative;
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 150px 0;
+        overflow: hidden;
+      }
+
+      .hero-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(52, 152, 219, 0.8) 0%,
+          rgba(46, 204, 113, 0.8) 100%
+        );
+        z-index: 1;
+      }
+
+      .hero-section > .container {
+        position: relative;
+        z-index: 2;
+      }
+
+      .hero-section h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .hero-section p {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        max-width: 600px;
+      }
+
+      /* Card Styling */
+      .card {
+        border: none;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        margin-bottom: 25px;
+        background-color: white;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      }
+
+      .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .card-img-top {
+        height: 220px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .card:hover .card-img-top {
+        transform: scale(1.1);
+      }
+
+      .card-body {
+        padding: 20px;
+      }
+
+      .card-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--text-color);
+      }
+
+      .card-text {
+        color: #666;
+        margin-bottom: 15px;
+      }
+
+      .card-footer {
+        background-color: transparent;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 15px 20px;
+      }
+
+      /* Buttons */
+      .btn {
+        border-radius: 30px;
+        padding: 10px 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .btn::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.2);
+        z-index: -2;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+        z-index: -1;
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn:hover::before {
+        width: 100%;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      .btn-outline-primary {
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      .btn-outline-primary:hover {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      /* Section Styling */
+      section {
+        padding: 80px 0;
+      }
+
+      section h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 50px;
+        text-align: center;
+        position: relative;
+      }
+
+      section h2::after {
+        content: "";
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(
+          to right,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+      }
+
+      /* Category Cards */
+      .category-card {
+        text-align: center;
+        padding: 30px 20px;
+        border-radius: var(--border-radius);
+        background-color: white;
+        box-shadow: var(--box-shadow);
+        transition: var(--transition);
+      }
+
+      .category-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .category-card i {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+      }
+
+      /* Rating */
+      .rating {
+        color: var(--accent-color);
+        font-size: 1.1rem;
+      }
+
+      /* Breadcrumb */
+      .breadcrumb {
+        background-color: transparent;
+        padding: 15px 0;
+      }
+
+      .breadcrumb-item a {
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      .breadcrumb-item.active {
+        color: #666;
+      }
+
+      /* Search Form */
+      .search-form {
+        background-color: white;
+        padding: 30px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        margin-bottom: 40px;
+      }
+
+      .form-control {
+        border-radius: 30px;
+        padding: 12px 20px;
+        border: 1px solid #e0e0e0;
+        transition: var(--transition);
+      }
+
+      .form-control:focus {
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        border-color: var(--primary-color);
+      }
+
+      /* Footer Enhancement */
+      footer {
+        background-color: var(--light-bg);
+        padding: 60px 0 30px;
+        margin-top: 80px;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      footer h5 {
+        font-weight: 600;
+        margin-bottom: 25px;
+        position: relative;
+        padding-bottom: 10px;
+      }
+
+      footer h5::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background: var(--primary-color);
+      }
+
+      footer ul li {
+        margin-bottom: 10px;
+      }
+
+      footer a {
+        color: #666;
+        text-decoration: none;
+        transition: var(--transition);
+      }
+
+      footer a:hover {
+        color: var(--primary-color);
+        padding-left: 5px;
+      }
+
+      footer .social-icons {
+        margin-top: 20px;
+      }
+
+      footer .social-icons a {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        background-color: #f1f1f1;
+        border-radius: 50%;
+        margin-right: 10px;
+        transition: var(--transition);
+      }
+
+      footer .social-icons a:hover {
+        background-color: var(--primary-color);
+        color: white;
+        transform: translateY(-5px);
+      }
+
+      /* Alert Messages */
+      .alert {
+        border-radius: var(--border-radius);
+        border: none;
+        box-shadow: var(--box-shadow);
+      }
+
+      /* Pagination */
+      .pagination {
+        margin-top: 40px;
+      }
+
+      .page-link {
+        border: none;
+        color: var(--text-color);
+        margin: 0 5px;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+      }
+
+      .page-link:hover {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--primary-color);
+      }
+
+      .page-item.active .page-link {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      /* Detail Page */
+      .place-detail-img {
+        height: 500px;
+        object-fit: cover;
+        border-radius: var(--border-radius);
+      }
+
+      .place-gallery img {
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .place-gallery img:hover {
+        transform: scale(1.05);
+        box-shadow: var(--box-shadow);
+      }
+
+      /* Review Section */
+      .review-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .review-user {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .review-user img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 15px;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
-        .card-img-top {
-            height: 200px;
-            object-fit: cover;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease forwards;
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 992px) {
         .hero-section {
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            padding: 100px 0;
+          padding: 100px 0;
         }
-        .rating {
-            color: #ffc107;
+
+        .hero-section h1 {
+          font-size: 2.5rem;
         }
+
+        section {
+          padding: 60px 0;
+        }
+
+        section h2 {
+          font-size: 2rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero-section {
+          padding: 80px 0;
+        }
+
+        .hero-section h1 {
+          font-size: 2rem;
+        }
+
+        .card-img-top {
+          height: 180px;
+        }
+
+        section {
+          padding: 40px 0;
+        }
+
         footer {
-            margin-top: 50px;
-            padding: 20px 0;
-            background-color: #f8f9fa;
+          padding: 40px 0 20px;
         }
+
+        .place-detail-img {
+          height: 300px;
+        }
+
+        .place-gallery img {
+          height: 80px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .navbar-brand {
+          font-size: 1.2rem;
+        }
+
+        .hero-section {
+          padding: 60px 0;
+        }
+
+        .hero-section h1 {
+          font-size: 1.8rem;
+        }
+
+        .btn {
+          padding: 8px 20px;
+        }
+
+        section h2 {
+          font-size: 1.8rem;
+        }
+
+        .place-detail-img {
+          height: 250px;
+        }
+      }
     </style>
     {% block extra_css %}{% endblock %}
-</head>
-<body>
+  </head>
+  <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="fas fa-map-marked-alt me-2"></i>แนะนำสถานที่ท่องเที่ยว
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">หน้าแรก</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'place_list' %}">สถานที่ท่องเที่ยวทั้งหมด</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle me-1"></i>{{ user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'profile' %}">โปรไฟล์</a></li>
-                                {% if user.is_staff %}
-                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">จัดการระบบ</a></li>
-                                {% endif %}
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form method="post" action="{% url 'logout' %}" class="d-inline">
-                                        {% csrf_token %}
-                                        <button type="submit" class="dropdown-item" style="background: none; border: none; padding: 0.5rem 1rem; text-align: left; width: 100%;">ออกจากระบบ</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">เข้าสู่ระบบ</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'signup' %}">สมัครสมาชิก</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">
+          <i class="fas fa-map-marked-alt me-2"></i>แนะนำสถานที่ท่องเที่ยว
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">หน้าแรก</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'place_list' %}"
+                >สถานที่ท่องเที่ยวทั้งหมด</a
+              >
+            </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="{% url 'about' %}">สมาชิกกลุ่ม</a>
+              </li>
+              {% if user.is_staff %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'manage_data' %}">การจัดการข้อมูล</a>
+            </li>
+            {% endif %}
+          </ul>
+          <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="fas fa-user-circle me-1"></i>{{ user.username }}
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="navbarDropdown"
+              >
+                <li>
+                  <a class="dropdown-item" href="{% url 'profile' %}"
+                    >โปรไฟล์</a
+                  >
+                </li>
+                {% if user.is_staff %}
+                <li>
+                  <a class="dropdown-item" href="{% url 'admin:index' %}"
+                    >จัดการระบบ</a
+                  >
+                </li>
+                {% endif %}
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <form
+                    method="post"
+                    action="{% url 'logout' %}"
+                    class="d-inline"
+                  >
+                    {% csrf_token %}
+                    <button type="submit" class="dropdown-item">
+                      ออกจากระบบ
+                    </button>
+                  </form>
+                </li>
+              </ul>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">เข้าสู่ระบบ</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'signup' %}">สมัครสมาชิก</a>
+            </li>
+            {% endif %}
+          </ul>
         </div>
+      </div>
     </nav>
     {% if messages %}
-        <div class="container mt-3">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endfor %}
-        </div>
+    <div class="container mt-3">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+      {% endfor %}
+    </div>
     {% endif %}
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+    <main>{% block content %}{% endblock %}</main>
     <footer class="bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>แนะนำสถานที่ท่องเที่ยว</h5>
-                    <p>ค้นพบสถานที่ท่องเที่ยวที่น่าสนใจทั่วประเทศไทย</p>
-                </div>
-                <div class="col-md-3">
-                    <h5>ลิงก์</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="{% url 'home' %}" class="text-decoration-none">หน้าแรก</a></li>
-                        <li><a href="{% url 'place_list' %}" class="text-decoration-none">สถานที่ท่องเที่ยว</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>ติดต่อเรา</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-envelope me-2"></i> contact@tourism.com</li>
-                        <li><i class="fas fa-phone me-2"></i> 02-123-4567</li>
-                    </ul>
-                </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h5>แนะนำสถานที่ท่องเที่ยว</h5>
+            <p>ค้นพบสถานที่ท่องเที่ยวที่น่าสนใจทั่วประเทศไทย</p>
+            <div class="social-icons">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-youtube"></i></a>
             </div>
-            <hr>
-            <div class="text-center">
-                <p>&copy; {% now "Y" %} แนะนำสถานที่ท่องเที่ยว. สงวนลิขสิทธิ์.</p>
-            </div>
+          </div>
+          <div class="col-md-3">
+            <h5>ลิงก์</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a href="{% url 'home' %}" class="text-decoration-none"
+                  >หน้าแรก</a
+                >
+              </li>
+              <li>
+                <a href="{% url 'place_list' %}" class="text-decoration-none"
+                  >สถานที่ท่องเที่ยว</a
+                >
+              </li>
+                <li>
+                    <a href="{% url 'about' %}" class="text-decoration-none">สมาชิกกลุ่ม</a
+                >
+                </li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h5>ติดต่อเรา</h5>
+            <ul class="list-unstyled">
+              <li>
+                <i class="fas fa-envelope me-2"></i> phichaiyut.wat@spumail.com
+              </li>
+              <li><i class="fas fa-phone me-2"></i> 092-968-6030</li>
+              <li>
+                <i class="fas fa-map-marker-alt me-2"></i> ชลบุรี, ประเทศไทย
+              </li>
+            </ul>
+          </div>
         </div>
+        <hr />
+        <div class="text-center">
+          <p>&copy; {% now "Y" %} แนะนำสถานที่ท่องเที่ยว. สงวนลิขสิทธิ์.</p>
+        </div>
+      </div>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      // เพิ่มเอฟเฟกต์ Navbar เมื่อเลื่อนหน้า
+      window.addEventListener("scroll", function () {
+        const navbar = document.querySelector(".navbar");
+        if (window.scrollY > 50) {
+          navbar.classList.add("scrolled");
+        } else {
+          navbar.classList.remove("scrolled");
+        }
+      });
+
+      // เพิ่มคลาส active ให้กับ nav-link ที่ตรงกับหน้าปัจจุบัน
+      document.addEventListener("DOMContentLoaded", function () {
+        const currentLocation = location.pathname;
+        const navLinks = document.querySelectorAll(".nav-link");
+
+        navLinks.forEach((link) => {
+          const href = link.getAttribute("href");
+          if (
+            href === currentLocation ||
+            (href === '{% url "home" %}' && currentLocation === "/") ||
+            (currentLocation.includes(href) && href !== '{% url "home" %}')
+          ) {
+            link.classList.add("active");
+          }
+        });
+
+        // เพิ่มแอนิเมชันให้กับการ์ดเมื่อเลื่อนมาถึง
+        const animateOnScroll = function () {
+          const cards = document.querySelectorAll(".card");
+
+          cards.forEach((card) => {
+            const cardPosition = card.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.3;
+
+            if (cardPosition < screenPosition) {
+              card.classList.add("animate-fade-in");
+            }
+          });
+        };
+
+        window.addEventListener("scroll", animateOnScroll);
+        // เรียกฟังก์ชันครั้งแรกเพื่อตรวจสอบองค์ประกอบที่มองเห็นได้ทันที
+        animateOnScroll();
+
+        // แก้ไขปัญหาดรอปดาวน์
+        var dropdownElementList = [].slice.call(
+          document.querySelectorAll(".dropdown-toggle")
+        );
+        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+          return new bootstrap.Dropdown(dropdownToggleEl);
+        });
+
+        // ตรวจสอบการทำงานของดรอปดาวน์บนอุปกรณ์มือถือ
+        if (window.innerWidth < 992) {
+          document
+            .querySelectorAll(".dropdown-toggle")
+            .forEach(function (element) {
+              element.addEventListener("click", function (e) {
+                let nextEl = this.nextElementSibling;
+                if (nextEl && !nextEl.classList.contains("show")) {
+                  // เปิดดรอปดาวน์
+                  let dropdown = new bootstrap.Dropdown(this);
+                  dropdown.show();
+                  e.stopPropagation();
+                  e.preventDefault();
+                }
+              });
+            });
+        }
+      });
+    </script>
     {% block extra_js %}{% endblock %}
-</body>
+  </body>
 </html>

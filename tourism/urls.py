@@ -10,4 +10,10 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('profile/', views.profile, name='profile'),
     path('accounts/logout/', views.logout_view, name='logout'),
+    path('about/', views.about, name='about'),
+    path('places/<int:pk>/review/', views.add_review, name='add_review'),
+    path('manage-data/', views.manage_data, name='manage_data'),
+    path('manage-data/add/', views.place_add, name='place_add'),
+    path('manage-data/edit/<int:pk>/', views.place_edit, name='place_edit'),
+    path('manage-data/delete/<int:pk>/', views.place_delete, name='place_delete'),
 ]

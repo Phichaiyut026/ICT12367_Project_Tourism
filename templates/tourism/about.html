@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}เกี่ยวกับเรา - แนะนำสถานที่ท่องเที่ยว{% endblock %}
+
+{% block content %}
+    <!-- Team Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">สมาชิกในกลุ่ม</h2>
+            
+            {% if team_members %}
+                <div class="row">
+                    {% for member in team_members %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card border-0 shadow-sm text-center h-100 team-card">
+                                <div class="card-body p-4">
+                                    <div class="rounded-circle overflow-hidden mx-auto mb-4 position-relative team-photo">
+                                        {% if member.photo %}
+                                            <img src="{{ member.photo.url }}" alt="{{ member.full_name }}" class="img-fluid">
+                                        {% else %}
+                                            <img src="/placeholder.svg?height=200&width=200" alt="{{ member.full_name }}" class="img-fluid">
+                                        {% endif %}
+                                    </div>
+                                    <h4>{{ member.first_name }} {{ member.last_name }}</h4>
+                                    <p class="text-primary fw-bold">{{ member.student_id }}</p>
+                                    <div class="d-flex justify-content-center social-icons">
+                                        {% if member.facebook %}
+                                            <a href="{{ member.facebook }}" target="_blank" class="social-icon facebook">
+                                                <i class="fab fa-facebook-f"></i>
+                                            </a>
+                                        {% endif %}
+                                        
+                                        {% if member.twitter %}
+                                            <a href="{{ member.twitter }}" target="_blank" class="social-icon twitter">
+                                                <i class="fab fa-twitter"></i>
+                                            </a>
+                                        {% endif %}
+                                        
+                                        {% if member.instagram %}
+                                            <a href="{{ member.instagram }}" target="_blank" class="social-icon instagram">
+                                                <i class="fab fa-instagram"></i>
+                                            </a>
+                                        {% endif %}
+                                        
+                                        {% if member.linkedin %}
+                                            <a href="{{ member.linkedin }}" target="_blank" class="social-icon linkedin">
+                                                <i class="fab fa-linkedin-in"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle me-2"></i>ยังไม่มีข้อมูลสมาชิกในกลุ่ม กรุณาเพิ่มข้อมูลในหน้าผู้ดูแลระบบ
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Team Member Card Styling */
+    .team-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .team-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .team-photo {
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+        border: 5px solid #f8f9fa;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.5s ease;
+    }
+    
+    .team-card:hover .team-photo {
+        transform: scale(1.05);
+    }
+    
+    .team-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .social-icons {
+        margin-top: 15px;
+    }
+    
+    .social-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin: 0 5px;
+        background-color: #f8f9fa;
+        color: #333;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .social-icon:hover {
+        transform: translateY(-5px);
+    }
+    
+    .social-icon.facebook:hover {
+        background-color: #3b5998;
+        color: white;
+    }
+    
+    .social-icon.twitter:hover {
+        background-color: #1da1f2;
+        color: white;
+    }
+    
+    .social-icon.instagram:hover {
+        background-color: #e1306c;
+        color: white;
+    }
+    
+    .social-icon.linkedin:hover {
+        background-color: #0077b5;
+        color: white;
+    }
+    
+    /* Animation for team cards */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .team-card {
+        opacity: 0;
+        animation: fadeInUp 0.5s ease forwards;
+    }
+    
+    .team-card:nth-child(1) { animation-delay: 0.1s; }
+    .team-card:nth-child(2) { animation-delay: 0.3s; }
+    .team-card:nth-child(3) { animation-delay: 0.5s; }
+    .team-card:nth-child(4) { animation-delay: 0.7s; }
+    .team-card:nth-child(5) { animation-delay: 0.9s; }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // เพิ่มแอนิเมชันให้กับการ์ดสมาชิกในทีม
+        const teamCards = document.querySelectorAll('.team-card');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        teamCards.forEach(card => {
+            observer.observe(card);
+        });
+    });
+</script>
+{% endblock %}

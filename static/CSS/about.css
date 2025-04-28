@@ -1,0 +1,90 @@
+/* Timeline Styling */
+.timeline {
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline:before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 2px;
+    background-color: var(--primary-color);
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+}
+
+.timeline-item {
+    position: relative;
+    padding: 0 30px;
+}
+
+.timeline-item.right:before,
+.timeline-item.left:before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    top: 30px;
+}
+
+.timeline-item.right:before {
+    left: -10px;
+}
+
+.timeline-item.left:before {
+    right: -10px;
+}
+
+/* Accordion Styling */
+.accordion-button {
+    background-color: white;
+    border-radius: var(--border-radius) !important;
+    padding: 15px 20px;
+    font-weight: 500;
+    box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed) {
+    color: var(--primary-color);
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(52, 152, 219, 0.2);
+}
+
+.accordion-button::after {
+    background-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.accordion-body {
+    padding: 15px 20px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .timeline:before {
+        left: 30px;
+    }
+
+    .timeline-item.right:before,
+    .timeline-item.left:before {
+        left: 20px;
+    }
+
+    .timeline-item.left {
+        padding-right: 0;
+        padding-left: 60px;
+    }
+
+    .timeline-item.right {
+        padding-left: 60px;
+    }
+}

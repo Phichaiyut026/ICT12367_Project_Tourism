@@ -1,0 +1,443 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ place.name }} - แนะนำสถานที่ท่องเที่ยว{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Image Display -->
+            {% if place.images.exists %}
+            <!-- Carousel code from previous response -->
+            <div id="placeCarousel" class="carousel slide mb-4 shadow-lg rounded" data-bs-ride="carousel">
+                <!-- Indicators/dots -->
+                <div class="carousel-indicators">
+                    {% for image in place.images.all %}
+                    <button type="button" data-bs-target="#placeCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
+                        {% if forloop.first %}class="active"{% endif %}
+                        aria-label="Slide {{ forloop.counter }}"></button>
+                    {% endfor %}
+                </div>
+                
+                <!-- The slideshow/carousel -->
+                <div class="carousel-inner rounded">
+                    {% for image in place.images.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="{{ image.image.url }}" class="d-block w-100" alt="{{ image.title|default:place.name }}" style="height: 500px; object-fit: cover;">
+                        {% if image.title %}
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>{{ image.title }}</h5>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Left and right controls/icons -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#placeCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#placeCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+            
+            <!-- Thumbnail Navigation (Optional) -->
+            <div class="row mb-4">
+                {% for image in place.images.all %}
+                <div class="col-3 col-md-2 mb-3">
+                    <img src="{{ image.image.url }}" class="img-thumbnail thumbnail-nav" 
+                         data-bs-target="#placeCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+                         alt="{{ image.title|default:place.name }}" style="cursor: pointer; height: 80px; object-fit: cover;">
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <!-- ถ้ายังไม่มีรูปภาพในระบบใหม่ ให้แสดงรูปภาพเดิม (ถ้ามี) หรือรูป placeholder -->
+            <div class="text-center mb-4">
+                {% if place.image %}
+                <img src="{{ place.image.url }}" class="img-fluid rounded shadow" alt="{{ place.name }}" style="max-height: 500px; width: 100%; object-fit: cover;">
+                {% else %}
+                <img src="/placeholder.svg?height=500&width=800" class="img-fluid rounded shadow" alt="{{ place.name }}">
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <!-- Place Details -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h1 class="card-title mb-3">{{ place.name }}</h1>
+                    <div class="d-flex align-items-center mb-3">
+                        {% if place.category %}
+                        <div class="me-3">
+                            <span class="badge bg-primary">{{ place.category.name }}</span>
+                        </div>
+                        {% endif %}
+                        {% if place.location %}
+                        <div class="me-3">
+                            <i class="fas fa-map-marker-alt text-danger"></i>
+                            <span>{{ place.location }}</span>
+                        </div>
+                        {% endif %}
+                        <div>
+                            <i class="fas fa-star text-warning"></i>
+                            <span>{{ place.rating|default:"0"|floatformat:1 }} ({{ place.reviews.count|default:"0" }} รีวิว)</span>
+                        </div>
+                    </div>
+                    
+                    <h5 class="card-subtitle mb-3">รายละเอียด</h5>
+                    <p class="card-text">{{ place.description|default:"ไม่มีข้อมูล"|linebreaks }}</p>
+                    
+                    <!-- Additional Details -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>ข้อมูลเพิ่มเติม</h5>
+                            <ul class="list-group list-group-flush">
+                                {% if place.opening_hours %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-clock text-primary me-2"></i> เวลาเปิด-ปิด</span>
+                                    <span>{{ place.opening_hours }}</span>
+                                </li>
+                                {% endif %}
+                                {% if place.entrance_fee %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-money-bill-wave text-success me-2"></i> ค่าเข้าชม</span>
+                                    <span>{{ place.entrance_fee }}</span>
+                                </li>
+                                {% endif %}
+                                {% if place.contact_phone %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-phone text-info me-2"></i> เบอร์โทรศัพท์</span>
+                                    <span>{{ place.contact_phone }}</span>
+                                </li>
+                                {% endif %}
+                                {% if place.website %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-globe text-secondary me-2"></i> เว็บไซต์</span>
+                                    <a href="{{ place.website }}" target="_blank">{{ place.website }}</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                <h5>สิ่งอำนวยความสะดวก</h5>
+                <div class="row">
+                    {% if has_parking_attr %}
+                    <div class="col-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="parking" {% if place.has_parking %}checked{% endif %} disabled>
+                            <label class="form-check-label" for="parking">
+                                ที่จอดรถ
+                            </label>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if has_restaurant_attr %}
+                    <div class="col-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="restaurant" {% if place.has_restaurant %}checked{% endif %} disabled>
+                            <label class="form-check-label" for="restaurant">
+                                ร้านอาหาร
+                            </label>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if has_wifi_attr %}
+                    <div class="col-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="wifi" {% if place.has_wifi %}checked{% endif %} disabled>
+                            <label class="form-check-label" for="wifi">
+                                Wi-Fi
+                            </label>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if has_restroom_attr %}
+                    <div class="col-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="restroom" {% if place.has_restroom %}checked{% endif %} disabled>
+                            <label class="form-check-label" for="restroom">
+                                ห้องน้ำ
+                            </label>
+                        </div>
+                    </div>
+                    {% endif %}
+    </div>
+</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reviews Section -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">รีวิวจากผู้เข้าชม</h5>
+                </div>
+                <div class="card-body">
+                    {% if place.reviews.exists %}
+                    <div class="reviews-container">
+                        {% for review in place.reviews.all %}
+                        <div class="review-item mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="me-3">
+                                    {% if review.user.profile.avatar %}
+                                    <img src="{{ review.user.profile.avatar.url }}" alt="{{ review.user.username }}" class="rounded-circle" width="50" height="50">
+                                    {% else %}
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                        <span>{{ review.user.username|first|upper }}</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">{{ review.user.get_full_name|default:review.user.username }}</h6>
+                                    <div class="text-muted small">{{ review.created_at|date:"j F Y" }}</div>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                {% for i in "12345" %}
+                                <i class="fas fa-star {% if forloop.counter <= review.rating %}text-warning{% else %}text-muted{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+                            <p>{{ review.comment }}</p>
+                            {% if review.images.exists %}
+                            <div class="row">
+                                {% for image in review.images.all %}
+                                <div class="col-4 col-md-3 col-lg-2 mb-3">
+                                    <a href="{{ image.image.url }}" data-lightbox="review-{{ review.id }}" data-title="{{ review.comment }}">
+                                        <img src="{{ image.image.url }}" alt="รูปภาพรีวิว" class="img-thumbnail" style="height: 100px; object-fit: cover;">
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% if not forloop.last %}<hr>{% endif %}
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
+                        <p>ยังไม่มีรีวิวสำหรับสถานที่ท่องเที่ยวนี้</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if user.is_authenticated %}
+                    <div class="mt-4">
+                        <h6>เขียนรีวิวของคุณ</h6>
+                        <form method="post" action="{% url 'place_detail' pk=place.id %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="rating" class="form-label">คะแนน</label>
+                                <div class="rating-stars">
+                                    {% for i in "12345" %}
+                                    <input type="radio" name="rating" id="rating-{{ forloop.counter }}" value="{{ forloop.counter }}" {% if forloop.counter == 5 %}checked{% endif %}>
+                                    <label for="rating-{{ forloop.counter }}"><i class="fas fa-star"></i></label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">ความคิดเห็น</label>
+                                <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="images" class="form-label">รูปภาพ (ไม่จำเป็น)</label>
+                                <input class="form-control" type="file" id="images" name="images" multiple accept="image/*">
+                                <div class="form-text">คุณสามารถอัปโหลดรูปภาพได้สูงสุด 5 รูป</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">ส่งรีวิว</button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info mt-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        กรุณา <a href="{% url 'login' %}?next={{ request.path }}">เข้าสู่ระบบ</a> เพื่อเขียนรีวิว
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Map -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">แผนที่</h5>
+                    {% if place.map_embed %}
+                    <div class="ratio ratio-4x3">
+                        {{ place.map_embed|safe }}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4 bg-light rounded">
+                        <i class="fas fa-map-marked-alt fa-3x text-muted mb-3"></i>
+                        <p>ไม่มีข้อมูลแผนที่</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Weather -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">สภาพอากาศ</h5>
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-sun fa-3x text-warning"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-0">32°C</h3>
+                            <p class="mb-0">แดดจัด, ความชื้น 65%</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="small text-muted">จันทร์</div>
+                            <i class="fas fa-cloud-sun"></i>
+                            <div>30°C</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="small text-muted">อังคาร</div>
+                            <i class="fas fa-cloud-rain"></i>
+                            <div>28°C</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="small text-muted">พุธ</div>
+                            <i class="fas fa-sun"></i>
+                            <div>31°C</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Nearby Places -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">สถานที่ใกล้เคียง</h5>
+                </div>
+                <div class="card-body">
+                    <div class="nearby-places">
+                        {% for nearby_place in nearby_places %}
+                        <div class="d-flex mb-3">
+                            <div class="flex-shrink-0 me-3">
+                                {% if nearby_place.image %}
+                                <img src="{{ nearby_place.image.url }}" alt="{{ nearby_place.name }}" class="rounded" width="80" height="80" style="object-fit: cover;">
+                                {% else %}
+                                <img src="/placeholder.svg?height=80&width=80" alt="{{ nearby_place.name }}" class="rounded" width="80" height="80">
+                                {% endif %}
+                            </div>
+                            <div>
+                                <h6 class="mb-1"><a href="{% url 'place_detail' nearby_place.id %}" class="text-decoration-none">{{ nearby_place.name }}</a></h6>
+                                <div class="small text-muted mb-1">
+                                    <i class="fas fa-map-marker-alt"></i> ห่างออกไป {{ nearby_place.distance|floatformat:1 }} กม.
+                                </div>
+                                <div>
+                                    {% for i in "12345" %}
+                                    <i class="fas fa-star {% if forloop.counter <= nearby_place.rating %}text-warning{% else %}text-muted{% endif %} small"></i>
+                                    {% endfor %}
+                                    <span class="small text-muted">({{ nearby_place.reviews.count|default:"0" }})</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-3">
+                            <i class="fas fa-map-signs fa-2x text-muted mb-2"></i>
+                            <p>ไม่พบสถานที่ใกล้เคียง</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Rating Stars */
+    .rating-stars {
+        display: inline-flex;
+        flex-direction: row-reverse;
+        gap: 0.5rem;
+    }
+    
+    .rating-stars input {
+        display: none;
+    }
+    
+    .rating-stars label {
+        cursor: pointer;
+        color: #ddd;
+        font-size: 1.5rem;
+    }
+    
+    .rating-stars input:checked ~ label {
+        color: #ffc107;
+    }
+    
+    .rating-stars label:hover,
+    .rating-stars label:hover ~ label {
+        color: #ffc107;
+    }
+    
+    /* Thumbnail Navigation */
+    .thumbnail-nav {
+        transition: all 0.2s ease;
+        opacity: 0.7;
+    }
+    
+    .thumbnail-nav:hover {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    
+    /* Carousel Enhancements */
+    .carousel-item img {
+        transition: transform 0.5s ease;
+    }
+    
+    .carousel:hover .carousel-item img {
+        transform: scale(1.02);
+    }
+    
+    .carousel-caption {
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ตรวจสอบว่ามีคาร์รูเซลหรือไม่
+        const carousel = document.getElementById('placeCarousel');
+        if (carousel) {
+            const thumbnails = document.querySelectorAll('.thumbnail-nav');
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', function() {
+                    const slideIndex = this.getAttribute('data-bs-slide-to');
+                    const carousel = new bootstrap.Carousel(document.getElementById('placeCarousel'));
+                    carousel.to(parseInt(slideIndex));
+                });
+            });
+            const placeCarousel = new bootstrap.Carousel(carousel, {
+                interval: 5000,
+                wrap: true,
+                touch: true
+            });
+        }
+
+        // Rating stars interaction
+        const ratingInputs = document.querySelectorAll('.rating-stars input');
+        ratingInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                console.log('Rating selected:', this.value);  // ดีบัก: ดูค่า rating ที่เลือก
+            });
+        });
+    });
+</script>
+{% endblock %}
