@@ -17,9 +17,6 @@
 ## Screenshot ตัวอย่างเว็บ
 ![screenshot](screenshots/homepage.png)
 
-## ผู้จัดทำ หีหีหีหีหีหีหี
-- นายสมชาย ตัวอย่าง
-
-## HeeKuyTed
+## ผู้จัดทำ
 - นายสมชาย ตัวอย่าง
 
